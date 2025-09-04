@@ -4,9 +4,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Objects;
 
+@Getter
+@Setter
 @Entity
 public class Disciplina {
 
@@ -25,70 +29,6 @@ public class Disciplina {
 
     public Disciplina() {
 
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public Boolean getArquivada() {
-        return arquivada;
-    }
-
-    public void setArquivada(Boolean arquivada) {
-        this.arquivada = arquivada;
-    }
-
-    public Double getMediaNecessaria() {
-        return mediaNecessaria;
-    }
-
-    public void setMediaNecessaria(Double mediaNecessaria) {
-        this.mediaNecessaria = mediaNecessaria;
-    }
-
-    public Double getMediaAtual() {
-        return mediaAtual;
-    }
-
-    public void setMediaAtual(Double mediaAtual) {
-        this.mediaAtual = mediaAtual;
-    }
-
-    public Integer getCreditos() {
-        return creditos;
-    }
-
-    public void setCreditos(Integer creditos) {
-        this.creditos = creditos;
-    }
-
-    public Integer getFaltasRestantes() {
-        return faltasRestantes;
-    }
-
-    public void setFaltasRestantes(Integer faltasRestantes) {
-        this.faltasRestantes = faltasRestantes;
     }
 
     @Override

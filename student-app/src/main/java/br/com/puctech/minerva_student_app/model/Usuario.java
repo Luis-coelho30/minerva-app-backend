@@ -1,16 +1,15 @@
 package br.com.puctech.minerva_student_app.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Objects;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 public class Usuario {
 
@@ -18,15 +17,19 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String username;
+    @Column(nullable = false, unique = true)
     private String email;
-    //senha - BaseEncoder ???
-    private Integer xp;
-    private Integer pontuacao;
+    private String senha;
+    //Default = 0
+    private Integer xp = 0;
+    private Integer pontuacao = 0;
     //itens - JSON
     //criadoEm - datetime
 
-    public Usuario() {
-
+    public Usuario(String username, String email, String senha) {
+        this.username = username;
+        this.email = email;
+        this.senha = senha;
     }
 
     @Override

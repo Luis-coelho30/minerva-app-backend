@@ -15,8 +15,8 @@ public class NotaDTO {
     private String descricao;
     private Double valor;
     private Integer peso;
-    
-    private NotaDTO(Nota nota) {
+
+    public NotaDTO(Nota nota) {
         BeanUtils.copyProperties(nota, this);
     }
 }

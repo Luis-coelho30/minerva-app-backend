@@ -56,7 +56,7 @@ public class UserService {
                 .map( usuario -> {
                     usuario.setUsername(novoUsuario.getUsername());
                     usuario.setEmail(novoUsuario.getEmail());
-                    usuario.setSenha(novoUsuario.getSenha());
+                    usuario.setSenha(encoder.encode(novoUsuario.getSenha()));
 
                     return userRepository.save(usuario);
                 })

@@ -5,12 +5,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Objects;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 public class Arquivo {
 
@@ -24,8 +26,10 @@ public class Arquivo {
     private String tipo;
     //criadoEm - datetime
 
-    public Arquivo(){
-
+    public Arquivo(String nomeOriginal, String url, String tipo) {
+        this.nomeOriginal = nomeOriginal;
+        this.url = url;
+        this.tipo = tipo;
     }
 
     @Override

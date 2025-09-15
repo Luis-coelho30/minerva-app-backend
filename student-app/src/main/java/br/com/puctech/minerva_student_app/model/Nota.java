@@ -5,12 +5,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Objects;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 public class Nota {
 
@@ -23,8 +25,10 @@ public class Nota {
     private Integer peso;
     //criadoEm - datetime
 
-    public Nota() {
-
+    public Nota(String descricao, Double valor, Integer peso) {
+        this.descricao = descricao;
+        this.valor = valor;
+        this.peso = peso;
     }
 
     @Override

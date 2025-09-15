@@ -9,18 +9,16 @@ import org.springframework.beans.BeanUtils;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DisciplinaDTO {
+public class DisciplinaRequestDTO {
 
     private Long id;
     private String nome;
     private String descricao;
     private Boolean arquivada;
     private Double mediaNecessaria;
-    private Double mediaAtual; //response
     private Integer creditos;
-    private Integer faltasRestantes; //response
 
-    public DisciplinaDTO(Disciplina disciplina) {
+    public DisciplinaRequestDTO(Disciplina disciplina) {
         BeanUtils.copyProperties(disciplina, this);
     }
 }

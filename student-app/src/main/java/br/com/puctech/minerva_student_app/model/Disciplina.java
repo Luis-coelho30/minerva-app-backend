@@ -5,12 +5,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Objects;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 public class Disciplina {
 
@@ -27,8 +29,14 @@ public class Disciplina {
     private Integer faltasRestantes;
     //criadoEm - datetime
 
-    public Disciplina() {
-
+    public Disciplina(String nome, String descricao, Boolean arquivada, Double mediaNecessaria, Double mediaAtual, Integer creditos, Integer faltasRestantes) {
+        this.nome = nome;
+        this.descricao = descricao;
+        this.arquivada = arquivada;
+        this.mediaNecessaria = mediaNecessaria;
+        this.mediaAtual = mediaAtual;
+        this.creditos = creditos;
+        this.faltasRestantes = faltasRestantes;
     }
 
     @Override

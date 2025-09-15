@@ -5,12 +5,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Objects;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 public class Tarefa {
 
@@ -28,8 +30,12 @@ public class Tarefa {
     private String prioridade;
     private Boolean arquivada;
 
-    public Tarefa() {
-
+    public Tarefa(String titulo, String descricao, String status, String prioridade, Boolean arquivada) {
+        this.titulo = titulo;
+        this.descricao = descricao;
+        this.status = status;
+        this.prioridade = prioridade;
+        this.arquivada = arquivada;
     }
 
     @Override

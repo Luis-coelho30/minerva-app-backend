@@ -1,5 +1,6 @@
 package br.com.puctech.minerva_student_app.service;
 
+import br.com.puctech.minerva_student_app.model.Nota;
 import br.com.puctech.minerva_student_app.model.Usuario;
 import br.com.puctech.minerva_student_app.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +27,6 @@ public class UserService {
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
-    public Usuario registrar(Usuario usuario) {
-        if(userRepository.existsByEmail(usuario.getEmail())) {
-            throw new IllegalStateException("Usuário já foi cadastrado.");
-        }
-        usuario.setSenha(encoder.encode(usuario.getSenha()));
-
-        return userRepository.save(usuario);
-    }
-
     public ResponseEntity<String> verificarLogin(Usuario usuario) {
         try {
             Authentication authentication =
@@ -48,5 +40,32 @@ public class UserService {
         }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+    }
+
+    public Usuario registrar(Usuario usuario) {
+        if(userRepository.existsByEmail(usuario.getEmail())) {
+            throw new IllegalStateException("Usuário já foi cadastrado.");
+        }
+        usuario.setSenha(encoder.encode(usuario.getSenha()));
+
+        return userRepository.save(usuario);
+    }
+
+    public Usuario atualizarUsuario(Long id, Usuario novoUsuario) {
+        return userRepository.findById(id)
+                .map( usuario -> {
+                    usuario.setUsername(novoUsuario.getUsername());
+                    usuario.setEmail(novoUsuario.getEmail());
+                    usuario.setSenha(novoUsuario.getSenha());
+
+                    return userRepository.save(usuario);
+                })
+                .orElseGet(() -> {
+                    return userRepository.save(novoUsuario);
+                });
+    }
+
+    public void deletarUsuario(Long id) {
+        userRepository.deleteById(id);
     }
 }

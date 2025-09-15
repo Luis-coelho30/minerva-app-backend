@@ -18,7 +18,7 @@ public class NotaService {
         return notaRepository.findAll();
     }
 
-    public Optional<Nota> buscarPorID (Long id) {
+    public Optional<Nota> buscarPorID(Long id) {
         return notaRepository.findById(id);
     }
 

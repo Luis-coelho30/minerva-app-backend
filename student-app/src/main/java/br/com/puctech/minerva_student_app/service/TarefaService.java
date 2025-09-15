@@ -18,7 +18,7 @@ public class TarefaService {
         return tarefaRepository.findAll();
     }
 
-    public Optional<Tarefa> buscarPorID (Long id) {
+    public Optional<Tarefa> buscarPorID(Long id) {
         return tarefaRepository.findById(id);
     }
 

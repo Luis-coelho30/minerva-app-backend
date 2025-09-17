@@ -1,9 +1,6 @@
 package br.com.puctech.minerva_student_app.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,15 +16,16 @@ public class Disciplina {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    //usuarioId - Long
+    @ManyToOne(cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
+    @JoinColumn(name = "USUARIO_ID", nullable = false)
+    private Usuario usuario;
     private String nome;
     private String descricao;
-    private Boolean arquivada;
+    private Boolean arquivada = false;
     private Double mediaNecessaria;
     private Double mediaAtual;
     private Integer creditos;
     private Integer faltasRestantes;
-    //criadoEm - datetime
 
     public Disciplina(String nome, String descricao, Boolean arquivada, Double mediaNecessaria, Double mediaAtual, Integer creditos, Integer faltasRestantes) {
         this.nome = nome;

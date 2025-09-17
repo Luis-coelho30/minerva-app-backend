@@ -20,11 +20,8 @@ public class Usuario {
     @Column(nullable = false, unique = true)
     private String email;
     private String senha;
-    //Default = 0
     private Integer xp = 0;
     private Integer pontuacao = 0;
-    //itens - JSON
-    //criadoEm - datetime
 
     public Usuario(String username, String email, String senha) {
         this.username = username;

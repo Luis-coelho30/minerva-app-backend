@@ -1,13 +1,11 @@
 package br.com.puctech.minerva_student_app.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
@@ -19,14 +17,18 @@ public class Tarefa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    //usuarioId - Long
-    //disciplinaId - Long
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USUARIO_ID", nullable = false)
+    private Usuario usuario;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DISCIPLINA_ID")
+    private Disciplina disciplina;
     private String titulo;
     private String descricao;
     private String status;
-    //dataInicio - datetime
-    //dataFinal - datetime
-    //concluidoEm - datetime
+    private LocalDateTime dataInicio;
+    private LocalDateTime dataFinal;
+    private LocalDateTime concluido_em;
     private String prioridade;
     private Boolean arquivada;
 

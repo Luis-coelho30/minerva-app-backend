@@ -1,9 +1,6 @@
 package br.com.puctech.minerva_student_app.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,12 +16,15 @@ public class Arquivo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    //usuarioId - Long
-    //disciplinaId - Long
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USUARIO_ID", nullable = false)
+    private Usuario usuario;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DISCIPLINA_ID", nullable = true)
+    private Disciplina disciplina;
     private String nomeOriginal;
     private String url;
     private String tipo;
-    //criadoEm - datetime
 
     public Arquivo(String nomeOriginal, String url, String tipo) {
         this.nomeOriginal = nomeOriginal;

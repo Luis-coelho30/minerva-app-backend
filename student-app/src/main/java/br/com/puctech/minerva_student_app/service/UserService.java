@@ -10,8 +10,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -51,21 +53,23 @@ public class UserService {
         return userRepository.save(usuario);
     }
 
-    public Usuario atualizarUsuario(Long id, Usuario novoUsuario) {
-        return userRepository.findById(id)
-                .map( usuario -> {
-                    usuario.setUsername(novoUsuario.getUsername());
-                    usuario.setEmail(novoUsuario.getEmail());
-                    usuario.setSenha(encoder.encode(novoUsuario.getSenha()));
+    @Transactional
+    public ResponseEntity<String> atualizarUsuario(String email, Usuario novoUsuario) {
+        Usuario usuario = userRepository.findByEmail(email);
+        if(usuario == null) {
+            throw new UsernameNotFoundException("Usuário não foi encontrado.");
+        } else {
+            usuario.setUsername(novoUsuario.getUsername());
+            usuario.setEmail(novoUsuario.getEmail());
+            usuario.setSenha(encoder.encode(novoUsuario.getSenha()));
+            userRepository.save(usuario);
+        }
 
-                    return userRepository.save(usuario);
-                })
-                .orElseGet(() -> {
-                    return userRepository.save(novoUsuario);
-                });
+        return ResponseEntity.ok().body(jwtService.generateToken(usuario.getEmail()));
     }
 
-    public void deletarUsuario(Long id) {
-        userRepository.deleteById(id);
+    @Transactional
+    public void deletarUsuario(String email) {
+        userRepository.deleteByEmail(email);
     }
 }

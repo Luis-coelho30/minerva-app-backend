@@ -7,6 +7,7 @@ import br.com.puctech.minerva_student_app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,18 +33,16 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
-    @PutMapping("/{id}")
-    public UsuarioResponseDTO atualizarUsuario(@PathVariable Long id, @RequestBody UsuarioRequestDTO usuarioDTO) {
-        Usuario usuario = new Usuario(usuarioDTO.getUsername(), usuarioDTO.getEmail(), usuarioDTO.getSenha());
-        Usuario usuarioSalvo = userService.atualizarUsuario(id, usuario);
-        UsuarioResponseDTO usuario_DTO = new UsuarioResponseDTO(usuarioSalvo);
+    @PutMapping("/update/{email}")
+    public ResponseEntity<String> atualizarUsuario(Authentication authentication, @RequestBody UsuarioRequestDTO usuarioDTO) {
+        Usuario novoUsuario = new Usuario(usuarioDTO.getUsername(), usuarioDTO.getEmail(), usuarioDTO.getSenha());
 
-        return usuario_DTO;
+        return userService.atualizarUsuario(authentication.getName(), novoUsuario);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarUsuario(@PathVariable Long id) {
-        userService.deletarUsuario(id);
+    @DeleteMapping("/delete/{email}")
+    public ResponseEntity<Void> deletarUsuario(Authentication authentication) {
+        userService.deletarUsuario(authentication.getName());
         return ResponseEntity.noContent().build();
     }
 }

@@ -30,10 +30,10 @@ public class UserService {
     public ResponseEntity<String> verificarLogin(Usuario usuario) {
         try {
             Authentication authentication =
-                    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(usuario.getUsername(), usuario.getSenha()));
+                    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(usuario.getEmail(), usuario.getSenha()));
 
             if(authentication.isAuthenticated()) {
-                return ResponseEntity.status(HttpStatus.OK).body(jwtService.generateToken(usuario.getUsername()));
+                return ResponseEntity.status(HttpStatus.OK).body(jwtService.generateToken(usuario.getEmail()));
             }
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);

@@ -33,14 +33,14 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
-    @PutMapping("/update/{email}")
+    @PutMapping("/update/me")
     public ResponseEntity<String> atualizarUsuario(Authentication authentication, @RequestBody UsuarioRequestDTO usuarioDTO) {
         Usuario novoUsuario = new Usuario(usuarioDTO.getUsername(), usuarioDTO.getEmail(), usuarioDTO.getSenha());
 
         return userService.atualizarUsuario(authentication.getName(), novoUsuario);
     }
 
-    @DeleteMapping("/delete/{email}")
+    @DeleteMapping("/delete/me")
     public ResponseEntity<Void> deletarUsuario(Authentication authentication) {
         userService.deletarUsuario(authentication.getName());
         return ResponseEntity.noContent().build();

@@ -1,7 +1,9 @@
 package br.com.puctech.minerva_student_app.service;
 
 import br.com.puctech.minerva_student_app.model.Disciplina;
+import br.com.puctech.minerva_student_app.model.Usuario;
 import br.com.puctech.minerva_student_app.repo.DisciplinaRepository;
+import br.com.puctech.minerva_student_app.repo.UserRepository;
 import jakarta.transaction.Transactional;
 import net.minidev.asm.ex.NoSuchFieldException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ public class DisciplinaService {
         return disciplinaRepository.findDisciplinasByUsermail(email);
     }
 
+    @Transactional
     public Disciplina salvarDisciplina(Disciplina disciplina) {
         return disciplinaRepository.save(disciplina);
     }

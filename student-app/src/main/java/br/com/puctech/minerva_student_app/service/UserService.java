@@ -29,6 +29,15 @@ public class UserService {
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
+    public Usuario getUsuario(String email) {
+        Usuario usuario = userRepository.findByEmail(email);
+        if(usuario==null) {
+            throw new UsernameNotFoundException("Usuário não foi encontrado");
+        }
+
+        return usuario;
+    }
+
     public ResponseEntity<String> verificarLogin(Usuario usuario) {
         try {
             Authentication authentication =

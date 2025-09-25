@@ -2,51 +2,81 @@ package br.com.puctech.minerva_student_app.controller;
 
 import br.com.puctech.minerva_student_app.dto.TarefaDTO;
 import br.com.puctech.minerva_student_app.model.Tarefa;
+import br.com.puctech.minerva_student_app.model.Usuario;
 import br.com.puctech.minerva_student_app.service.TarefaService;
+import br.com.puctech.minerva_student_app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/tarefas")
+@RequestMapping("/tarefas/me")
 public class TarefaController {
 
     @Autowired
     private TarefaService tarefaService;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping
-    public List<TarefaDTO> listarTarefas() {
-        List<Tarefa> tarefa = tarefaService.listarTarefas();
-        List<TarefaDTO> tarefaDTO = tarefa.stream().map(x -> new TarefaDTO(x)).toList();
+    public List<TarefaDTO> listarTarefasPorUsuario(Authentication authentication) {
+        List<Tarefa> tarefaList = tarefaService.listarTarefasPorUsuario(authentication.getName());
 
-        return tarefaDTO;
+        return tarefaList.stream().map(TarefaDTO::new).toList();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<TarefaDTO> buscarPorId(@PathVariable Long id) {
-        return tarefaService.buscarPorID(id)
-                .map(tarefa -> ResponseEntity.ok(new TarefaDTO(tarefa)))
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/disciplina/{id}")
+    public ResponseEntity<List<TarefaDTO>> buscarPorDisciplina(Authentication authentication, @PathVariable Long id) {
+
+        List<Tarefa> tarefasList = tarefaService.buscarPorDisciplina(authentication.getName(), id);
+
+        if(tarefasList == null) {
+            return ResponseEntity.ok(null);
+        }
+
+        return ResponseEntity.ok(tarefasList.stream()
+                            .map(TarefaDTO::new)
+                            .toList());
     }
 
-    @PostMapping
-    public TarefaDTO criarTarefa(@RequestBody TarefaDTO tarefaDTO) {
-        Tarefa tarefa = new Tarefa(tarefaDTO.getTitulo(), tarefaDTO.getDescricao(), tarefaDTO.getStatus(), tarefaDTO.getPrioridade(), tarefaDTO.getArquivada());
-        Tarefa tarefaSalva = tarefaService.salvarTarefa(tarefa);
-        TarefaDTO tarefa_DTO = new TarefaDTO(tarefaSalva);
+    @PostMapping("/create")
+    public TarefaDTO criarTarefa(@RequestBody TarefaDTO tarefaDTO, Authentication authentication) {
+        Usuario usuario = userService.getUsuario(authentication.getName());
 
-        return tarefa_DTO;
+        Tarefa tarefa = new Tarefa(usuario, tarefaDTO.getTitulo(), tarefaDTO.getDescricao(),
+                tarefaDTO.getStatus(), tarefaDTO.getPrioridade(), tarefaDTO.getArquivada());
+
+        Tarefa tarefaSalva;
+
+        if(tarefaDTO.getDisciplinaId() == null) {
+            tarefaSalva = tarefaService.salvarTarefa(tarefa);
+        } else {
+            tarefaSalva = tarefaService.salvarTarefa(tarefa, tarefaDTO.getDisciplinaId());
+        }
+
+        return new TarefaDTO(tarefaSalva);
     }
 
     @PutMapping("/{id}")
-    public TarefaDTO atualizarTarefa(@PathVariable Long id, @RequestBody TarefaDTO tarefaDTO) {
-        Tarefa tarefa = new Tarefa(tarefaDTO.getTitulo(), tarefaDTO.getDescricao(), tarefaDTO.getStatus(), tarefaDTO.getPrioridade(), tarefaDTO.getArquivada());
-        Tarefa tarefaSalva = tarefaService.atualizarTarefa(id, tarefa);
-        TarefaDTO tarefa_DTO = new TarefaDTO(tarefaSalva);
+    public TarefaDTO atualizarTarefa(@PathVariable Long id, @RequestBody TarefaDTO tarefaDTO, Authentication authentication) {
+        Usuario usuario = userService.getUsuario(authentication.getName());
 
-        return tarefa_DTO;
+        Tarefa tarefa = new Tarefa(usuario, tarefaDTO.getTitulo(), tarefaDTO.getDescricao(),
+                tarefaDTO.getStatus(), tarefaDTO.getPrioridade(), tarefaDTO.getArquivada());
+
+        Tarefa tarefaSalva;
+
+        if(tarefaDTO.getDisciplinaId() == null) {
+            tarefaSalva = tarefaService.atualizarTarefa(id, tarefa);
+        } else {
+            tarefaSalva = tarefaService.atualizarTarefa(id, tarefa, tarefaDTO.getDisciplinaId());
+        }
+
+        return new TarefaDTO(tarefaSalva);
     }
 
     @DeleteMapping("/{id}")

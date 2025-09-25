@@ -19,6 +19,7 @@ public class Disciplina {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USUARIO_ID", nullable = false)
     private Usuario usuario;
+    @Column(unique = true, nullable = false)
     private String nome;
     private String descricao;
     private Boolean arquivada = false;

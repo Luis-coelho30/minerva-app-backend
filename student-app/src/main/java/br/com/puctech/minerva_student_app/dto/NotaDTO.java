@@ -4,7 +4,6 @@ import br.com.puctech.minerva_student_app.model.Nota;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.BeanUtils;
 
 @Getter
 @Setter
@@ -15,8 +14,13 @@ public class NotaDTO {
     private String descricao;
     private Double valor;
     private Integer peso;
+    private Long disciplinaId;
 
     public NotaDTO(Nota nota) {
-        BeanUtils.copyProperties(nota, this);
+        this.id = nota.getId();
+        this.descricao = nota.getDescricao();
+        this.valor = nota.getValor();
+        this.peso = nota.getPeso();
+        this.disciplinaId = nota.getDisciplina().getId();
     }
 }

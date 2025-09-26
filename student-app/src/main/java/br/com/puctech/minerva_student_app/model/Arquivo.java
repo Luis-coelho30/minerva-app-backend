@@ -26,7 +26,8 @@ public class Arquivo {
     private String url;
     private String tipo;
 
-    public Arquivo(String nomeOriginal, String url, String tipo) {
+    public Arquivo(Usuario usuario, String nomeOriginal, String url, String tipo) {
+        this.usuario = usuario;
         this.nomeOriginal = nomeOriginal;
         this.url = url;
         this.tipo = tipo;

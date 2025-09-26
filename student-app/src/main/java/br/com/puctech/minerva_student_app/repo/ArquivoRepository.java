@@ -11,8 +11,14 @@ import java.util.List;
 public interface ArquivoRepository extends JpaRepository<Arquivo, Long> {
 
     @Query(nativeQuery = true,
-            value = "SELECT ARQUIVO.* FROM ARQUIVO" +
-                    "INNER JOIN USUARIOS AS u ON u.ID = ARQUIVO.USUARIO_ID" +
+            value = "SELECT ARQUIVO.* FROM ARQUIVO " +
+                    "INNER JOIN USUARIO AS u ON u.ID = ARQUIVO.USUARIO_ID " +
                     "WHERE u.email = ?1")
     List<Arquivo> findArquivosByUsermail(String email);
+
+    @Query(nativeQuery = true,
+            value = "SELECT ARQUIVO.* FROM ARQUIVO " +
+                    "INNER JOIN DISCIPLINA AS disc ON disc.ID = ARQUIVO.DISCIPLINA_ID " +
+                    "WHERE disc.id = ?1")
+    List<Arquivo> findArquivosByDisciplina(Long disciplinaId);
 }

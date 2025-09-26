@@ -24,6 +24,10 @@ public class DisciplinaService {
         return disciplinaRepository.findById(id);
     }
 
+    public Optional<Disciplina> buscarPorNome(String email, String name) {
+        return Optional.of(disciplinaRepository.findDisciplinasByName(email, name));
+    }
+
     @Transactional
     public Disciplina salvarDisciplina(Disciplina disciplina) {
         return disciplinaRepository.save(disciplina);
@@ -53,7 +57,5 @@ public class DisciplinaService {
         disciplinaRepository.deleteDisciplinasByName(email, name);
     }
 
-    public Optional<Disciplina> buscarPorNome(String email, String name) {
-        return Optional.of(disciplinaRepository.findDisciplinasByName(email, name));
-    }
+
 }

@@ -3,6 +3,7 @@ package br.com.puctech.minerva_student_app.service;
 import br.com.puctech.minerva_student_app.model.Disciplina;
 import br.com.puctech.minerva_student_app.model.Tarefa;
 import br.com.puctech.minerva_student_app.repo.TarefaRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -27,10 +28,12 @@ public class TarefaService {
         return tarefaRepository.findTaskByDisciplina(email, disciplinaId);
     }
 
+    @Transactional
     public Tarefa salvarTarefa(Tarefa tarefa) {
         return tarefaRepository.save(tarefa);
     }
 
+    @Transactional
     public Tarefa salvarTarefa(Tarefa tarefa, Long disciplinaId) {
 
         Optional<Disciplina> disciplina = disciplinaService.buscarPorId(disciplinaId);
@@ -44,6 +47,7 @@ public class TarefaService {
         return tarefaRepository.save(tarefa);
     }
 
+    @Transactional
     public Tarefa atualizarTarefa(Long id, Tarefa novaTarefa) {
         return tarefaRepository.findById(id)
                 .map( tarefa -> {
@@ -62,6 +66,7 @@ public class TarefaService {
                 });
     }
 
+    @Transactional
     public Tarefa atualizarTarefa(Long id, Tarefa tarefa, Long disciplinaId) {
 
         Optional<Disciplina> disciplina = disciplinaService.buscarPorId(disciplinaId);
@@ -86,6 +91,7 @@ public class TarefaService {
                 });
     }
 
+    @Transactional
     public void deletarTarefa(Long id) {
         tarefaRepository.deleteById(id);
     }

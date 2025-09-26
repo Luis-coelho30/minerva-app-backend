@@ -2,51 +2,75 @@ package br.com.puctech.minerva_student_app.controller;
 
 import br.com.puctech.minerva_student_app.dto.ArquivoDTO;
 import br.com.puctech.minerva_student_app.model.Arquivo;
+import br.com.puctech.minerva_student_app.model.Usuario;
 import br.com.puctech.minerva_student_app.service.ArquivoService;
+import br.com.puctech.minerva_student_app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/arquivos")
+@RequestMapping("/arquivos/me")
 public class ArquivoController {
 
     @Autowired
     private ArquivoService arquivoService;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping
-    public List<ArquivoDTO> listarArquivos() {
-        List<Arquivo> arquivo = arquivoService.listarArquivos();
-        List<ArquivoDTO> arquivoDTO = arquivo.stream().map(x -> new ArquivoDTO(x)).toList();
+    public List<ArquivoDTO> listarArquivos(Authentication authentication) {
+        List<Arquivo> arquivo = arquivoService.listarArquivos(authentication.getName());
 
-        return arquivoDTO;
+        return arquivo.stream()
+                .map(ArquivoDTO::new)
+                .toList();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ArquivoDTO> buscarPorId(@PathVariable Long id) {
-        return arquivoService.buscarPorID(id)
-                .map(arquivo -> ResponseEntity.ok(new ArquivoDTO(arquivo)))
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/{disciplinaId}")
+    public List<ArquivoDTO> getArquivosByDisciplina(@PathVariable Long disciplinaId) {
+        List<Arquivo> arquivo = arquivoService.listarArquivosPorDisciplina(disciplinaId);
+
+        return arquivo.stream()
+                .map(ArquivoDTO::new)
+                .toList();
     }
 
-    @PostMapping
-    public ArquivoDTO criarArquivo(@RequestBody ArquivoDTO arquivoDTO) {
-        Arquivo arquivo = new Arquivo(arquivoDTO.getNomeOriginal(), arquivoDTO.getUrl(), arquivoDTO.getTipo());
-        Arquivo arquivoSalvo = arquivoService.salvarArquivo(arquivo);
-        ArquivoDTO arquivo_DTO = new ArquivoDTO(arquivoSalvo);
+    @PostMapping("/create")
+    public ArquivoDTO criarArquivo(@RequestBody ArquivoDTO arquivoDTO, Authentication authentication) {
+        Usuario usuario = userService.getUsuario(authentication.getName());
 
-        return arquivo_DTO;
+        Arquivo arquivo = new Arquivo(usuario, arquivoDTO.getNomeOriginal(), arquivoDTO.getUrl(), arquivoDTO.getTipo());
+
+        Arquivo arquivoSalvo;
+
+        if(arquivoDTO.getDisciplinaId() == null) {
+            arquivoSalvo = arquivoService.salvarArquivo(arquivo);
+        } else {
+            arquivoSalvo = arquivoService.salvarArquivo(arquivo, arquivoDTO.getDisciplinaId());
+        }
+
+        return new ArquivoDTO(arquivoSalvo);
     }
 
     @PutMapping("/{id}")
-    public ArquivoDTO atualizarArquivo(@PathVariable Long id, @RequestBody ArquivoDTO arquivoDTO) {
-        Arquivo arquivo = new Arquivo(arquivoDTO.getNomeOriginal(), arquivoDTO.getUrl(), arquivoDTO.getTipo());
-        Arquivo arquivoSalvo = arquivoService.atualizarArquivo(id, arquivo);
-        ArquivoDTO arquivo_DTO = new ArquivoDTO(arquivoSalvo);
+    public ArquivoDTO atualizarArquivo(@PathVariable Long id, @RequestBody ArquivoDTO arquivoDTO, Authentication authentication) {
+        Usuario usuario = userService.getUsuario(authentication.getName());
 
-        return arquivo_DTO;
+        Arquivo arquivo = new Arquivo(usuario, arquivoDTO.getNomeOriginal(), arquivoDTO.getUrl(), arquivoDTO.getTipo());
+
+        Arquivo arquivoSalvo;
+        if(arquivoDTO.getDisciplinaId() == null) {
+            arquivoSalvo = arquivoService.atualizarArquivo(id, arquivo);
+        } else {
+            arquivoSalvo = arquivoService.atualizarArquivo(id, arquivo, arquivoDTO.getDisciplinaId());
+        }
+
+        return new ArquivoDTO(arquivoSalvo);
     }
 
     @DeleteMapping("/{id}")

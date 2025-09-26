@@ -16,9 +16,10 @@ public class Disciplina {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USUARIO_ID", nullable = false)
     private Usuario usuario;
+    @Column(unique = true, nullable = false)
     private String nome;
     private String descricao;
     private Boolean arquivada = false;
@@ -27,7 +28,8 @@ public class Disciplina {
     private Integer creditos;
     private Integer faltasRestantes;
 
-    public Disciplina(String nome, String descricao, Boolean arquivada, Double mediaNecessaria, Double mediaAtual, Integer creditos, Integer faltasRestantes) {
+    public Disciplina(Usuario usuario, String nome, String descricao, Boolean arquivada, Double mediaNecessaria, Double mediaAtual, Integer creditos, Integer faltasRestantes) {
+        this.usuario = usuario;
         this.nome = nome;
         this.descricao = descricao;
         this.arquivada = arquivada;

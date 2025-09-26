@@ -2,6 +2,8 @@ package br.com.puctech.minerva_student_app.service;
 
 import br.com.puctech.minerva_student_app.model.Disciplina;
 import br.com.puctech.minerva_student_app.repo.DisciplinaRepository;
+import jakarta.transaction.Transactional;
+import net.minidev.asm.ex.NoSuchFieldException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,37 +16,46 @@ public class DisciplinaService {
     @Autowired
     private DisciplinaRepository disciplinaRepository;
 
-    public List<Disciplina> listarDisciplinas() {
-        return disciplinaRepository.findAll();
+    public List<Disciplina> listarDisciplinas(String email) {
+        return disciplinaRepository.findDisciplinasByUsermail(email);
     }
 
-    public Optional<Disciplina> buscarPorID (Long id) {
+    public Optional<Disciplina> buscarPorId(Long id) {
         return disciplinaRepository.findById(id);
     }
 
+    public Optional<Disciplina> buscarPorNome(String email, String name) {
+        return Optional.of(disciplinaRepository.findDisciplinasByName(email, name));
+    }
+
+    @Transactional
     public Disciplina salvarDisciplina(Disciplina disciplina) {
         return disciplinaRepository.save(disciplina);
     }
 
-    public Disciplina atualizarDisciplina(Long id, Disciplina novaDisciplina) {
-        return disciplinaRepository.findById(id)
-                .map( disciplina -> {
-                    disciplina.setNome(novaDisciplina.getNome());
-                    disciplina.setDescricao(novaDisciplina.getDescricao());
-                    disciplina.setArquivada(novaDisciplina.getArquivada());
-                    disciplina.setMediaNecessaria(novaDisciplina.getMediaNecessaria());
-                    disciplina.setMediaAtual(novaDisciplina.getMediaAtual());
-                    disciplina.setCreditos(novaDisciplina.getCreditos());
-                    disciplina.setFaltasRestantes(novaDisciplina.getFaltasRestantes());
+    @Transactional
+    public Disciplina atualizarDisciplina(String email, String name, Disciplina novaDisciplina) {
+        Disciplina disciplina = disciplinaRepository.findDisciplinasByName(email, name);
 
-                    return disciplinaRepository.save(disciplina);
-                })
-                .orElseGet(() -> {
-                    return disciplinaRepository.save(novaDisciplina);
-                });
+        if(disciplina != null) {
+            disciplina.setNome(novaDisciplina.getNome());
+            disciplina.setDescricao(novaDisciplina.getDescricao());
+            disciplina.setArquivada(novaDisciplina.getArquivada());
+            disciplina.setMediaNecessaria(novaDisciplina.getMediaNecessaria());
+            disciplina.setMediaAtual(novaDisciplina.getMediaAtual());
+            disciplina.setCreditos(novaDisciplina.getCreditos());
+            disciplina.setFaltasRestantes(novaDisciplina.getFaltasRestantes());
+        } else {
+            throw new NoSuchFieldException("Nenhuma disciplina encontrada");
+        }
+
+        return disciplinaRepository.save(disciplina);
     }
 
-    public void deletarDisciplina(Long id) {
-        disciplinaRepository.deleteById(id);
+    @Transactional
+    public void deletarDisciplina(String email, String name) {
+        disciplinaRepository.deleteDisciplinasByName(email, name);
     }
+
+
 }

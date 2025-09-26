@@ -32,7 +32,8 @@ public class Tarefa {
     private String prioridade;
     private Boolean arquivada;
 
-    public Tarefa(String titulo, String descricao, String status, String prioridade, Boolean arquivada) {
+    public Tarefa(Usuario usuario, String titulo, String descricao, String status, String prioridade, Boolean arquivada) {
+        this.usuario = usuario;
         this.titulo = titulo;
         this.descricao = descricao;
         this.status = status;

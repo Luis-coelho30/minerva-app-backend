@@ -34,7 +34,7 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/usuarios/register", "/usuarios/login", "/h2-console/**").permitAll()
+                        .requestMatchers("/usuarios/register", "/usuarios/login", "/h2-console/**", "/scalar/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()) //authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session ->

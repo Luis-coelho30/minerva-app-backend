@@ -38,19 +38,19 @@ public class UserService {
         return usuario;
     }
 
-    public ResponseEntity<String> verificarLogin(Usuario usuario) {
+    public String verificarLogin(Usuario usuario) {
         try {
             Authentication authentication =
                     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(usuario.getEmail(), usuario.getSenha()));
 
             if(authentication.isAuthenticated()) {
-                return ResponseEntity.status(HttpStatus.OK).body(jwtService.generateToken(usuario.getEmail()));
+                return jwtService.generateToken(usuario.getEmail());
             }
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            return "";
         }
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        return "";
     }
 
     public Usuario registrar(Usuario usuario) {

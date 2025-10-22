@@ -1,5 +1,6 @@
 package br.com.puctech.minerva_student_app.controller;
 
+import br.com.puctech.minerva_student_app.dto.TokenResponseDTO;
 import br.com.puctech.minerva_student_app.dto.UsuarioRequestDTO;
 import br.com.puctech.minerva_student_app.dto.UsuarioResponseDTO;
 import br.com.puctech.minerva_student_app.model.Usuario;
@@ -18,10 +19,16 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UsuarioRequestDTO usuarioRequestDTO) {
+    public ResponseEntity<TokenResponseDTO> login(@RequestBody UsuarioRequestDTO usuarioRequestDTO) {
         Usuario usuario = new Usuario(usuarioRequestDTO.getUsername(), usuarioRequestDTO.getEmail(), usuarioRequestDTO.getSenha());
 
-        return userService.verificarLogin(usuario);
+        String jwt = userService.verificarLogin(usuario);
+
+        if (jwt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        return ResponseEntity.ok(new TokenResponseDTO(jwt));
     }
 
     @PostMapping("/register")

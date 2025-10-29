@@ -1,5 +1,6 @@
 package br.com.puctech.minerva_student_app.service;
 
+import br.com.puctech.minerva_student_app.exception.disciplina.DisciplinaNaoEncontradaException;
 import br.com.puctech.minerva_student_app.model.Disciplina;
 import br.com.puctech.minerva_student_app.model.Tarefa;
 import br.com.puctech.minerva_student_app.repo.TarefaRepository;
@@ -39,7 +40,7 @@ public class TarefaService {
         Optional<Disciplina> disciplina = disciplinaService.buscarPorId(disciplinaId);
 
         if(disciplina.isEmpty()) {
-            throw new UsernameNotFoundException("Disciplina não encontrada");
+            throw new DisciplinaNaoEncontradaException(disciplinaId);
         }
 
         tarefa.setDisciplina(disciplina.get());
@@ -61,9 +62,7 @@ public class TarefaService {
 
                     return tarefaRepository.save(tarefa);
                 })
-                .orElseGet(() -> {
-                    return tarefaRepository.save(novaTarefa);
-                });
+                .orElseGet(() -> tarefaRepository.save(novaTarefa));
     }
 
     @Transactional
@@ -72,7 +71,7 @@ public class TarefaService {
         Optional<Disciplina> disciplina = disciplinaService.buscarPorId(disciplinaId);
 
         if(disciplina.isEmpty()) {
-            throw new UsernameNotFoundException("Disciplina não encontrada");
+            throw new DisciplinaNaoEncontradaException(disciplinaId);
         }
 
         return tarefaRepository.findById(id)
@@ -86,9 +85,7 @@ public class TarefaService {
 
                     return tarefaRepository.save(tarefa);
                 })
-                .orElseGet(() -> {
-                    return tarefaRepository.save(tarefa);
-                });
+                .orElseGet(() -> tarefaRepository.save(tarefa));
     }
 
     @Transactional

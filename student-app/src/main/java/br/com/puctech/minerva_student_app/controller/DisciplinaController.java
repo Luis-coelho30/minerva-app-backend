@@ -31,9 +31,9 @@ public class DisciplinaController {
         return disciplina.stream().map(DisciplinaResponseDTO::new).toList();
     }
 
-    @GetMapping("/{name}")
-    public ResponseEntity<DisciplinaResponseDTO> buscarPorNome(@PathVariable String name, Authentication authentication) {
-        return disciplinaService.buscarPorNome(authentication.getName(), name)
+    @GetMapping("/{id}")
+    public ResponseEntity<DisciplinaResponseDTO> buscarPorId(@PathVariable Long id, Authentication authentication) {
+        return disciplinaService.buscarPorId(id)
                 .map(disciplina -> ResponseEntity.ok(new DisciplinaResponseDTO(disciplina)))
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -50,20 +50,20 @@ public class DisciplinaController {
         return new DisciplinaResponseDTO(disciplinaSalva);
     }
 
-    @PutMapping("/{name}")
-    public DisciplinaResponseDTO atualizarDisciplina(@PathVariable String name, @RequestBody DisciplinaRequestDTO disciplinaDTO, Authentication authentication) {
+    @PutMapping("/{id}")
+    public DisciplinaResponseDTO atualizarDisciplina(@PathVariable Long id, @RequestBody DisciplinaRequestDTO disciplinaDTO, Authentication authentication) {
         Usuario usuario = userService.getUsuario(authentication.getName());
 
         Disciplina disciplina = new Disciplina(usuario, disciplinaDTO.getNome(), disciplinaDTO.getDescricao(), disciplinaDTO.getArquivada(),
                 disciplinaDTO.getMediaNecessaria(), 0.0, disciplinaDTO.getCreditos(), 0);
-        Disciplina disciplinaSalva = disciplinaService.atualizarDisciplina(authentication.getName(), name, disciplina);
+        Disciplina disciplinaSalva = disciplinaService.atualizarDisciplina(id, disciplina);
 
         return new DisciplinaResponseDTO(disciplinaSalva);
     }
 
-    @DeleteMapping("/{name}")
-    public ResponseEntity<Void> deletarDisciplina(@PathVariable String name, Authentication authentication) {
-        disciplinaService.deletarDisciplina(authentication.getName(), name);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarDisciplina(@PathVariable Long id, Authentication authentication) {
+        disciplinaService.deletarDisciplina(id);
         return ResponseEntity.noContent().build();
     }
 }

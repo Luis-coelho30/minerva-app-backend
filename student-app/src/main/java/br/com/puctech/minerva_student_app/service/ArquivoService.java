@@ -51,9 +51,7 @@ public class ArquivoService {
 
                     return arquivoRepository.save(arquivo);
                 })
-                .orElseGet(() -> {
-                    return arquivoRepository.save(novoArquivo);
-                });
+                .orElseGet(() -> arquivoRepository.save(novoArquivo));
     }
 
     @Transactional
@@ -70,9 +68,7 @@ public class ArquivoService {
 
                     return arquivoRepository.save(arquivo);
                 })
-                .orElseGet(() -> {
-                    return arquivoRepository.save(novoArquivo);
-                });
+                .orElseGet(() -> arquivoRepository.save(novoArquivo));
     }
 
     @Transactional

@@ -1,5 +1,6 @@
 package br.com.puctech.minerva_student_app.service;
 
+import br.com.puctech.minerva_student_app.exception.disciplina.DisciplinaNaoEncontradaException;
 import br.com.puctech.minerva_student_app.model.Disciplina;
 import br.com.puctech.minerva_student_app.model.Nota;
 import br.com.puctech.minerva_student_app.repo.NotaRepository;
@@ -32,7 +33,7 @@ public class NotaService {
         if(disciplina.isPresent()) {
             nota.setDisciplina(disciplina.get());
         } else {
-            throw new IllegalArgumentException("Disciplina não foi encontrada");
+            throw new DisciplinaNaoEncontradaException(disciplinaId);
         }
 
         return notaRepository.save(nota);
@@ -44,7 +45,7 @@ public class NotaService {
         if(disciplina.isPresent()) {
             novaNota.setDisciplina(disciplina.get());
         } else {
-            throw new IllegalArgumentException("Disciplina não foi encontrada");
+            throw new DisciplinaNaoEncontradaException(disciplinaId);
         }
 
         return notaRepository.findById(id)
@@ -56,9 +57,7 @@ public class NotaService {
 
                     return notaRepository.save(nota);
                 })
-                .orElseGet(() -> {
-                    return notaRepository.save(novaNota);
-                });
+                .orElseGet(() -> notaRepository.save(novaNota));
     }
 
     public void deletarNota(Long id) {

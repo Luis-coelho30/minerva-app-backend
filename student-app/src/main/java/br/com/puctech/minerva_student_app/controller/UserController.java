@@ -18,7 +18,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<TokenResponseDTO> login(@RequestBody UsuarioRequestDTO usuarioRequestDTO) {
         Usuario usuario = new Usuario(usuarioRequestDTO.getUsername(), usuarioRequestDTO.getEmail(), usuarioRequestDTO.getSenha());
 

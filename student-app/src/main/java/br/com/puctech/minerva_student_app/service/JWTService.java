@@ -1,5 +1,6 @@
 package br.com.puctech.minerva_student_app.service;
 
+import br.com.puctech.minerva_student_app.exception.user.CredenciaisIncorretasException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -68,11 +69,15 @@ public class JWTService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(getKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+        try {
+            return Jwts.parser()
+                    .verifyWith(getKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (io.jsonwebtoken.JwtException e) {
+            throw new CredenciaisIncorretasException("Token inválido ou expirado");
+        }
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {

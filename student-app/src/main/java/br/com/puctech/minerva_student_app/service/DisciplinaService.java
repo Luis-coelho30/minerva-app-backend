@@ -1,9 +1,9 @@
 package br.com.puctech.minerva_student_app.service;
 
+import br.com.puctech.minerva_student_app.exception.disciplina.DisciplinaNaoEncontradaException;
 import br.com.puctech.minerva_student_app.model.Disciplina;
 import br.com.puctech.minerva_student_app.repo.DisciplinaRepository;
 import jakarta.transaction.Transactional;
-import net.minidev.asm.ex.NoSuchFieldException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,20 +24,18 @@ public class DisciplinaService {
         return disciplinaRepository.findById(id);
     }
 
-    public Optional<Disciplina> buscarPorNome(String email, String name) {
-        return Optional.of(disciplinaRepository.findDisciplinasByName(email, name));
-    }
-
     @Transactional
     public Disciplina salvarDisciplina(Disciplina disciplina) {
         return disciplinaRepository.save(disciplina);
     }
 
     @Transactional
-    public Disciplina atualizarDisciplina(String email, String name, Disciplina novaDisciplina) {
-        Disciplina disciplina = disciplinaRepository.findDisciplinasByName(email, name);
+    public Disciplina atualizarDisciplina(Long id, Disciplina novaDisciplina) {
+        Optional<Disciplina> disciplinaOpt = disciplinaRepository.findById(id);
+        Disciplina disciplina;
 
-        if(disciplina != null) {
+        if(disciplinaOpt.isPresent()) {
+            disciplina = disciplinaOpt.get();
             disciplina.setNome(novaDisciplina.getNome());
             disciplina.setDescricao(novaDisciplina.getDescricao());
             disciplina.setArquivada(novaDisciplina.getArquivada());
@@ -46,15 +44,15 @@ public class DisciplinaService {
             disciplina.setCreditos(novaDisciplina.getCreditos());
             disciplina.setFaltasRestantes(novaDisciplina.getFaltasRestantes());
         } else {
-            throw new NoSuchFieldException("Nenhuma disciplina encontrada");
+            throw new DisciplinaNaoEncontradaException(id);
         }
 
         return disciplinaRepository.save(disciplina);
     }
 
     @Transactional
-    public void deletarDisciplina(String email, String name) {
-        disciplinaRepository.deleteDisciplinasByName(email, name);
+    public void deletarDisciplina(Long id) {
+        disciplinaRepository.deleteById(id);
     }
 
 

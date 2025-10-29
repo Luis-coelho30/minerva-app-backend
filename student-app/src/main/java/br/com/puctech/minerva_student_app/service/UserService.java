@@ -1,5 +1,8 @@
 package br.com.puctech.minerva_student_app.service;
 
+import br.com.puctech.minerva_student_app.exception.user.AuthenticationFailedException;
+import br.com.puctech.minerva_student_app.exception.user.CredenciaisIncorretasException;
+import br.com.puctech.minerva_student_app.exception.user.EmailJaCadastradoException;
 import br.com.puctech.minerva_student_app.model.Nota;
 import br.com.puctech.minerva_student_app.model.Usuario;
 import br.com.puctech.minerva_student_app.repo.UserRepository;
@@ -40,22 +43,23 @@ public class UserService {
 
     public String verificarLogin(Usuario usuario) {
         try {
-            Authentication authentication =
-                    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(usuario.getEmail(), usuario.getSenha()));
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(usuario.getEmail(), usuario.getSenha())
+            );
 
             if(authentication.isAuthenticated()) {
                 return jwtService.generateToken(usuario.getEmail());
             }
-        } catch (AuthenticationException e) {
-            return "";
-        }
 
-        return "";
+            throw new AuthenticationFailedException("Falha ao autenticar usuário");
+        } catch (AuthenticationException e) {
+            throw new CredenciaisIncorretasException("Email ou senha inválidos");
+        }
     }
 
     public Usuario registrar(Usuario usuario) {
         if(userRepository.existsByEmail(usuario.getEmail())) {
-            throw new IllegalStateException("Usuário já foi cadastrado.");
+            throw new EmailJaCadastradoException("Usuário já foi cadastrado.");
         }
         usuario.setSenha(encoder.encode(usuario.getSenha()));
 

@@ -1,11 +1,12 @@
 package br.com.puctech.minerva_student_app.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Getter
@@ -26,17 +27,21 @@ public class Tarefa {
     private String titulo;
     private String descricao;
     private String status;
-    private LocalDateTime dataInicio;
-    private LocalDateTime dataFinal;
-    private LocalDateTime concluido_em;
+    private LocalDate dataInicio;
+    private LocalDate dataFinal;
+    private LocalDate concluido_em;
     private String prioridade;
-    private Boolean arquivada;
+    private Boolean arquivada = false;
 
-    public Tarefa(Usuario usuario, String titulo, String descricao, String status, String prioridade, Boolean arquivada) {
+    public Tarefa(Usuario usuario, String titulo, String descricao, String status, LocalDate dataInicio, LocalDate dataFinal,
+                  LocalDate concluido_em, String prioridade, Boolean arquivada) {
         this.usuario = usuario;
         this.titulo = titulo;
         this.descricao = descricao;
         this.status = status;
+        this.dataInicio = dataInicio;
+        this.dataFinal = dataFinal;
+        this.concluido_em = concluido_em;
         this.prioridade = prioridade;
         this.arquivada = arquivada;
     }

@@ -1,11 +1,15 @@
 package br.com.puctech.minerva_student_app.dto;
 
 import br.com.puctech.minerva_student_app.model.Tarefa;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.BeanUtils;
 
+import java.time.LocalDate;
+
+@Getter
+@Setter
 @NoArgsConstructor
 public class TarefaDTO {
 
@@ -14,6 +18,12 @@ public class TarefaDTO {
     private String descricao;
     private String status;
     private Long disciplinaId;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    private LocalDate dataInicio;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    private LocalDate dataFinal;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    private LocalDate concluido_em;
     private String prioridade;
     private Boolean arquivada;
 
@@ -25,63 +35,10 @@ public class TarefaDTO {
         if(tarefa.getDisciplina() != null) {
             this.disciplinaId = tarefa.getDisciplina().getId();
         }
+        this.dataInicio = tarefa.getDataInicio();
+        this.dataFinal = tarefa.getDataFinal();
+        this.concluido_em = tarefa.getConcluido_em();
         this.prioridade = tarefa.getPrioridade();
         this.arquivada = tarefa.getArquivada();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitulo() {
-        return titulo;
-    }
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Long getDisciplinaId() {
-        return disciplinaId;
-    }
-
-    public void setDisciplinaId(Long disciplinaId) {
-        this.disciplinaId = disciplinaId;
-    }
-
-    public String getPrioridade() {
-        return prioridade;
-    }
-
-    public void setPrioridade(String prioridade) {
-        this.prioridade = prioridade;
-    }
-
-    public Boolean getArquivada() {
-        return arquivada;
-    }
-
-    public void setArquivada(Boolean arquivada) {
-        this.arquivada = arquivada;
     }
 }

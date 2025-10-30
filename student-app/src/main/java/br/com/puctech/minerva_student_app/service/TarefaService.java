@@ -6,7 +6,6 @@ import br.com.puctech.minerva_student_app.model.Tarefa;
 import br.com.puctech.minerva_student_app.repo.TarefaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,7 +57,9 @@ public class TarefaService {
                     tarefa.setDisciplina(null);
                     tarefa.setPrioridade(novaTarefa.getPrioridade());
                     tarefa.setArquivada((novaTarefa.getArquivada()));
-
+                    tarefa.setDataInicio(novaTarefa.getDataInicio());
+                    tarefa.setDataFinal(novaTarefa.getDataFinal());
+                    tarefa.setConcluido_em(novaTarefa.getConcluido_em());
 
                     return tarefaRepository.save(tarefa);
                 })
@@ -82,6 +83,9 @@ public class TarefaService {
                     tarefa.setPrioridade(tarefa.getPrioridade());
                     tarefa.setArquivada((tarefa.getArquivada()));
                     tarefa.setDisciplina(disciplina.get());
+                    tarefa.setDataInicio(tarefa.getDataInicio());
+                    tarefa.setDataFinal(tarefa.getDataFinal());
+                    tarefa.setConcluido_em(tarefa.getConcluido_em());
 
                     return tarefaRepository.save(tarefa);
                 })

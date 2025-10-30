@@ -48,7 +48,8 @@ public class TarefaController {
         Usuario usuario = userService.getUsuario(authentication.getName());
 
         Tarefa tarefa = new Tarefa(usuario, tarefaDTO.getTitulo(), tarefaDTO.getDescricao(),
-                tarefaDTO.getStatus(), tarefaDTO.getPrioridade(), tarefaDTO.getArquivada());
+                tarefaDTO.getStatus(), tarefaDTO.getDataInicio(), tarefaDTO.getDataFinal(), tarefaDTO.getConcluido_em(),
+                tarefaDTO.getPrioridade(), tarefaDTO.getArquivada());
 
         Tarefa tarefaSalva;
 
@@ -66,7 +67,8 @@ public class TarefaController {
         Usuario usuario = userService.getUsuario(authentication.getName());
 
         Tarefa tarefa = new Tarefa(usuario, tarefaDTO.getTitulo(), tarefaDTO.getDescricao(),
-                tarefaDTO.getStatus(), tarefaDTO.getPrioridade(), tarefaDTO.getArquivada());
+                tarefaDTO.getStatus(), tarefaDTO.getDataInicio(), tarefaDTO.getDataFinal(), tarefaDTO.getConcluido_em(),
+                tarefaDTO.getPrioridade(), tarefaDTO.getArquivada());
 
         Tarefa tarefaSalva;
 

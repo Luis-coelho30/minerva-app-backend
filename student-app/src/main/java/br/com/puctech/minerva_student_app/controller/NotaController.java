@@ -25,7 +25,7 @@ public class NotaController {
                 .toList();
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public NotaDTO criarNota(@RequestBody NotaDTO notaDTO) {
         Nota nota = new Nota(notaDTO.getDescricao(), notaDTO.getValor(), notaDTO.getPeso());
         Nota notaSalva = notaService.salvarNota(nota, notaDTO.getDisciplinaId());

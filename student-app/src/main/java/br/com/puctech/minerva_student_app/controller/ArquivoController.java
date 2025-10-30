@@ -23,24 +23,23 @@ public class ArquivoController {
     private UserService userService;
 
     @GetMapping
-    public List<ArquivoDTO> listarArquivos(Authentication authentication) {
-        List<Arquivo> arquivo = arquivoService.listarArquivos(authentication.getName());
+    public List<ArquivoDTO> listarArquivos(Authentication authentication,
+                                           @RequestParam(name = "disciplinaId", required = false) Long disciplinaId) {
 
-        return arquivo.stream()
+        List<Arquivo> arquivoList;
+
+        if(disciplinaId == null) {
+            arquivoList = arquivoService.listarArquivos(authentication.getName());
+        } else {
+            arquivoList = arquivoService.listarArquivosPorDisciplina(disciplinaId);
+        }
+
+        return arquivoList.stream()
                 .map(ArquivoDTO::new)
                 .toList();
     }
 
-    @GetMapping("/{disciplinaId}")
-    public List<ArquivoDTO> getArquivosByDisciplina(@PathVariable Long disciplinaId) {
-        List<Arquivo> arquivo = arquivoService.listarArquivosPorDisciplina(disciplinaId);
-
-        return arquivo.stream()
-                .map(ArquivoDTO::new)
-                .toList();
-    }
-
-    @PostMapping("/create")
+    @PostMapping
     public ArquivoDTO criarArquivo(@RequestBody ArquivoDTO arquivoDTO, Authentication authentication) {
         Usuario usuario = userService.getUsuario(authentication.getName());
 

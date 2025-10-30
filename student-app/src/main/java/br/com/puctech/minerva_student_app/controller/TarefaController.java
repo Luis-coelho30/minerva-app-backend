@@ -23,27 +23,22 @@ public class TarefaController {
     private UserService userService;
 
     @GetMapping
-    public List<TarefaDTO> listarTarefasPorUsuario(Authentication authentication) {
+    public List<TarefaDTO> listarTarefasPorUsuario(Authentication authentication,
+                                                   @RequestParam(name = "disciplinaId", required = false) Long disciplinaId) {
         List<Tarefa> tarefaList = tarefaService.listarTarefasPorUsuario(authentication.getName());
 
-        return tarefaList.stream().map(TarefaDTO::new).toList();
-    }
-
-    @GetMapping("/disciplina/{id}")
-    public ResponseEntity<List<TarefaDTO>> buscarPorDisciplina(Authentication authentication, @PathVariable Long id) {
-
-        List<Tarefa> tarefasList = tarefaService.buscarPorDisciplina(authentication.getName(), id);
-
-        if(tarefasList == null) {
-            return ResponseEntity.ok(null);
+        if(disciplinaId == null) {
+            tarefaList = tarefaService.listarTarefasPorUsuario(authentication.getName());
+        } else {
+            tarefaList = tarefaService.buscarPorDisciplina(authentication.getName(), disciplinaId);
         }
 
-        return ResponseEntity.ok(tarefasList.stream()
-                            .map(TarefaDTO::new)
-                            .toList());
+        return tarefaList.stream()
+                .map(TarefaDTO::new)
+                .toList();
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public TarefaDTO criarTarefa(@RequestBody TarefaDTO tarefaDTO, Authentication authentication) {
         Usuario usuario = userService.getUsuario(authentication.getName());
 

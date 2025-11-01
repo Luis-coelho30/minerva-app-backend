@@ -50,7 +50,7 @@ public class UserController {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(new TokenResponseDTO(jwt));
+                .build();
     }
 
     @PostMapping("/register")

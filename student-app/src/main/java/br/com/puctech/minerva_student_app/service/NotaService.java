@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class NotaService {
@@ -79,6 +81,14 @@ public class NotaService {
         notaRepository.delete(nota);
 
         recalcularMediaDisciplina(disciplina);
+    }
+
+    @Transactional(readOnly = true)
+    public Map<Long, List<Nota>> listarNotasAgrupadasPorDisciplina(String email) {
+        List<Nota> todasAsNotas = notaRepository.findAllByUserMail(email);
+
+        return todasAsNotas.stream()
+                .collect(Collectors.groupingBy(nota -> nota.getDisciplina().getId()));
     }
 
     private void recalcularMediaDisciplina(Disciplina disciplina) {

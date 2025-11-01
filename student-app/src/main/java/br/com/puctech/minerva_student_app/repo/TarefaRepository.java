@@ -22,4 +22,6 @@ public interface TarefaRepository extends JpaRepository<Tarefa, Long> {
                     "INNER JOIN USUARIO AS u ON u.ID = TAREFA.USUARIO_ID " +
                     "WHERE u.email = ?1 AND disc.ID = ?2")
     List<Tarefa> findTaskByDisciplina(String email, Long disciplinaId);
+
+    void deleteAllByDisciplinaId(Long id);
 }

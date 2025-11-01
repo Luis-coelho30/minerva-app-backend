@@ -3,9 +3,10 @@ package br.com.puctech.minerva_student_app.service;
 import br.com.puctech.minerva_student_app.model.Arquivo;
 import br.com.puctech.minerva_student_app.model.Disciplina;
 import br.com.puctech.minerva_student_app.repo.ArquivoRepository;
-import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,10 +20,12 @@ public class ArquivoService {
     @Autowired
     private DisciplinaService disciplinaService;
 
+    @Transactional(readOnly = true)
     public List<Arquivo> listarArquivos(String email) {
         return arquivoRepository.findArquivosByUsermail(email);
     }
 
+    @Transactional(readOnly = true)
     public List<Arquivo> listarArquivosPorDisciplina(Long disciplinaId) {
         return arquivoRepository.findArquivosByDisciplina(disciplinaId);
     }

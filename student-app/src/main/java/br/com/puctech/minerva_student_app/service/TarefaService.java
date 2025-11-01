@@ -4,7 +4,7 @@ import br.com.puctech.minerva_student_app.exception.disciplina.DisciplinaNaoEnco
 import br.com.puctech.minerva_student_app.model.Disciplina;
 import br.com.puctech.minerva_student_app.model.Tarefa;
 import br.com.puctech.minerva_student_app.repo.TarefaRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +20,12 @@ public class TarefaService {
     @Autowired
     private DisciplinaService disciplinaService;
 
+    @Transactional(readOnly = true)
     public List<Tarefa> listarTarefasPorUsuario(String email) {
         return tarefaRepository.findTaskByUsermail(email);
     }
 
+    @Transactional(readOnly = true)
     public List<Tarefa> buscarPorDisciplina(String email, Long disciplinaId) {
         return tarefaRepository.findTaskByDisciplina(email, disciplinaId);
     }

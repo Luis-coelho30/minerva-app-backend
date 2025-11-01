@@ -3,9 +3,12 @@ package br.com.puctech.minerva_student_app.service;
 import br.com.puctech.minerva_student_app.exception.disciplina.DisciplinaNaoEncontradaException;
 import br.com.puctech.minerva_student_app.model.Disciplina;
 import br.com.puctech.minerva_student_app.repo.DisciplinaRepository;
-import jakarta.transaction.Transactional;
+import br.com.puctech.minerva_student_app.repo.NotaRepository;
+
+import br.com.puctech.minerva_student_app.repo.TarefaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,10 +19,18 @@ public class DisciplinaService {
     @Autowired
     private DisciplinaRepository disciplinaRepository;
 
+    @Autowired
+    private NotaRepository notaRepository;
+
+    @Autowired
+    private TarefaRepository tarefaRepository;
+
+    @Transactional(readOnly = true)
     public List<Disciplina> listarDisciplinas(String email) {
         return disciplinaRepository.findDisciplinasByUsermail(email);
     }
 
+    @Transactional(readOnly = true)
     public Optional<Disciplina> buscarPorId(Long id) {
         return disciplinaRepository.findById(id);
     }
@@ -52,6 +63,15 @@ public class DisciplinaService {
 
     @Transactional
     public void deletarDisciplina(Long id) {
+
+        if (!disciplinaRepository.existsById(id)) {
+            throw new DisciplinaNaoEncontradaException(id);
+        }
+
+        notaRepository.deleteAllByDisciplinaId(id);
+
+        tarefaRepository.deleteAllByDisciplinaId(id);
+
         disciplinaRepository.deleteById(id);
     }
 

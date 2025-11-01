@@ -15,4 +15,6 @@ public interface NotaRepository extends JpaRepository<Nota, Long> {
                     "INNER JOIN DISCIPLINA AS disc ON disc.ID = NOTA.DISCIPLINA_ID " +
                     "WHERE disc.ID = ?1")
     List<Nota> findNotasByDisciplina(Long id);
+
+    void deleteAllByDisciplinaId(Long id);
 }

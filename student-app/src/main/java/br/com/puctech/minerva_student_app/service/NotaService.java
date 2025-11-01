@@ -1,11 +1,13 @@
 package br.com.puctech.minerva_student_app.service;
 
 import br.com.puctech.minerva_student_app.exception.disciplina.DisciplinaNaoEncontradaException;
+import br.com.puctech.minerva_student_app.exception.nota.NotaNaoEncontradaException;
 import br.com.puctech.minerva_student_app.model.Disciplina;
 import br.com.puctech.minerva_student_app.model.Nota;
 import br.com.puctech.minerva_student_app.repo.NotaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,48 +21,84 @@ public class NotaService {
     @Autowired
     private DisciplinaService disciplinaService;
 
+    @Transactional(readOnly = true)
     public List<Nota> listarNotasPorDisciplina(Long id) {
         return notaRepository.findNotasByDisciplina(id);
     }
 
+    @Transactional(readOnly = true)
     public Optional<Nota> buscarPorID(Long id) {
         return notaRepository.findById(id);
     }
 
+    @Transactional
     public Nota salvarNota(Nota nota, Long disciplinaId) {
-        Optional<Disciplina> disciplina = disciplinaService.buscarPorId(disciplinaId);
+        Optional<Disciplina> disciplinaOpt = disciplinaService.buscarPorId(disciplinaId);
 
-        if(disciplina.isPresent()) {
-            nota.setDisciplina(disciplina.get());
-        } else {
+        if (disciplinaOpt.isEmpty()) {
             throw new DisciplinaNaoEncontradaException(disciplinaId);
         }
 
-        return notaRepository.save(nota);
+        Disciplina disciplina = disciplinaOpt.get();
+
+        nota.setDisciplina(disciplina);
+        Nota notaSalva = notaRepository.save(nota);
+
+        recalcularMediaDisciplina(disciplina);
+
+        return notaSalva;
     }
 
+    @Transactional
     public Nota atualizarNota(Long id, Nota novaNota, Long disciplinaId) {
-        Optional<Disciplina> disciplina = disciplinaService.buscarPorId(disciplinaId);
+        Disciplina disciplina = disciplinaService.buscarPorId(disciplinaId)
+                .orElseThrow(() -> new DisciplinaNaoEncontradaException(disciplinaId));
 
-        if(disciplina.isPresent()) {
-            novaNota.setDisciplina(disciplina.get());
-        } else {
-            throw new DisciplinaNaoEncontradaException(disciplinaId);
-        }
+        Nota nota = notaRepository.findById(id)
+                .orElseThrow(() -> new NotaNaoEncontradaException(id));
 
-        return notaRepository.findById(id)
-                .map( nota -> {
-                    nota.setDescricao(novaNota.getDescricao());
-                    nota.setValor(novaNota.getValor());
-                    nota.setPeso(novaNota.getPeso());
-                    nota.setDisciplina(disciplina.get());
+        nota.setDescricao(novaNota.getDescricao());
+        nota.setValor(novaNota.getValor());
+        nota.setPeso(novaNota.getPeso());
+        nota.setDisciplina(disciplina);
 
-                    return notaRepository.save(nota);
-                })
-                .orElseGet(() -> notaRepository.save(novaNota));
+        Nota notaSalva = notaRepository.save(nota);
+
+        recalcularMediaDisciplina(disciplina);
+
+        return notaSalva;
     }
 
+    @Transactional
     public void deletarNota(Long id) {
-        notaRepository.deleteById(id);
+        Nota nota = notaRepository.findById(id)
+                .orElseThrow(() -> new NotaNaoEncontradaException(id));
+
+        Disciplina disciplina = nota.getDisciplina();
+
+        notaRepository.delete(nota);
+
+        recalcularMediaDisciplina(disciplina);
+    }
+
+    private void recalcularMediaDisciplina(Disciplina disciplina) {
+        List<Nota> todasAsNotas = notaRepository.findNotasByDisciplina(disciplina.getId());
+
+        double somaValoresPonderados = 0.0;
+        int somaTotalPesos = 0;
+
+        for (Nota n : todasAsNotas) {
+            somaValoresPonderados += n.getValor() * n.getPeso();
+            somaTotalPesos += n.getPeso();
+        }
+
+        if (somaTotalPesos > 0) {
+            double novaMedia = somaValoresPonderados / somaTotalPesos;
+            disciplina.setMediaAtual(novaMedia);
+        } else {
+            disciplina.setMediaAtual(0.0);
+        }
+
+        disciplinaService.salvarDisciplina(disciplina);
     }
 }

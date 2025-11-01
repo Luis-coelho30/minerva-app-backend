@@ -1,6 +1,7 @@
 package br.com.puctech.minerva_student_app.exception;
 
 import br.com.puctech.minerva_student_app.exception.disciplina.DisciplinaNaoEncontradaException;
+import br.com.puctech.minerva_student_app.exception.nota.NotaNaoEncontradaException;
 import br.com.puctech.minerva_student_app.exception.user.AuthenticationFailedException;
 import br.com.puctech.minerva_student_app.exception.user.CredenciaisIncorretasException;
 import br.com.puctech.minerva_student_app.exception.user.EmailJaCadastradoException;
@@ -22,6 +23,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DisciplinaNaoEncontradaException.class)
     public ResponseEntity<String> handleDisciplinaNaoEncontradaException(DisciplinaNaoEncontradaException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND) //404
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(NotaNaoEncontradaException.class)
+    public ResponseEntity<String> handleNotaNaoEncontradaException(NotaNaoEncontradaException ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND) //404
                 .body(ex.getMessage());

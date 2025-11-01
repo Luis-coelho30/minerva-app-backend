@@ -3,11 +3,11 @@ package br.com.puctech.minerva_student_app.service;
 import br.com.puctech.minerva_student_app.exception.user.AuthenticationFailedException;
 import br.com.puctech.minerva_student_app.exception.user.CredenciaisIncorretasException;
 import br.com.puctech.minerva_student_app.exception.user.EmailJaCadastradoException;
-import br.com.puctech.minerva_student_app.model.Nota;
+
 import br.com.puctech.minerva_student_app.model.Usuario;
 import br.com.puctech.minerva_student_app.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,6 +32,7 @@ public class UserService {
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
+    @Transactional(readOnly = true)
     public Usuario getUsuario(String email) {
         Usuario usuario = userRepository.findByEmail(email);
         if(usuario==null) {
@@ -57,6 +58,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public Usuario registrar(Usuario usuario) {
         if(userRepository.existsByEmail(usuario.getEmail())) {
             throw new EmailJaCadastradoException("Usuário já foi cadastrado.");

@@ -1,5 +1,6 @@
 package br.com.puctech.minerva_student_app.config;
 
+import br.com.puctech.minerva_student_app.exception.user.AuthenticationFailedException;
 import br.com.puctech.minerva_student_app.service.JWTService;
 import br.com.puctech.minerva_student_app.service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
@@ -29,12 +30,19 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        String authHeader = request.getHeader("Authorization");
         String token = null;
         String email = null;
 
-        if(authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
+        if(request.getCookies() != null) {
+            for (var cookie : request.getCookies()) {
+                if ("jwt".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if(token != null) {
             email = jwtService.extractUserMail(token);
         }
 

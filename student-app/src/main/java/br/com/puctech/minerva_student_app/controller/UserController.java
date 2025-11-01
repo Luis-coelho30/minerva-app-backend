@@ -5,11 +5,17 @@ import br.com.puctech.minerva_student_app.dto.UsuarioRequestDTO;
 import br.com.puctech.minerva_student_app.dto.UsuarioResponseDTO;
 import br.com.puctech.minerva_student_app.model.Usuario;
 import br.com.puctech.minerva_student_app.service.UserService;
+
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.Duration;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -19,8 +25,14 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponseDTO> login(@RequestBody UsuarioRequestDTO usuarioRequestDTO) {
-        Usuario usuario = new Usuario(usuarioRequestDTO.getUsername(), usuarioRequestDTO.getEmail(), usuarioRequestDTO.getSenha());
+    public ResponseEntity<TokenResponseDTO> login(@RequestBody UsuarioRequestDTO usuarioRequestDTO,
+                                                  HttpServletResponse response) {
+
+        Usuario usuario = new Usuario(
+                usuarioRequestDTO.getUsername(),
+                usuarioRequestDTO.getEmail(),
+                usuarioRequestDTO.getSenha()
+        );
 
         String jwt = userService.verificarLogin(usuario);
 
@@ -28,7 +40,17 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        return ResponseEntity.ok(new TokenResponseDTO(jwt));
+        ResponseCookie cookie = ResponseCookie.from("jwt", jwt)
+                .httpOnly(true)
+                .secure(false) // true em prod
+                .path("/")
+                .sameSite("None")
+                .maxAge(Duration.ofHours(1))
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(new TokenResponseDTO(jwt));
     }
 
     @PostMapping("/register")

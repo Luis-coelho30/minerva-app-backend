@@ -18,7 +18,9 @@ public class DisciplinaDTO {
     private Double mediaNecessaria;
     private Double mediaAtual;
     private Integer creditos;
-    private Integer faltasRestantes;
+    private Integer cargaHorariaTotal;
+    private Integer cargaHorariaAula;
+    private Integer faltasRegistradas;
 
     public DisciplinaDTO(Disciplina disciplina) {
         BeanUtils.copyProperties(disciplina, this);

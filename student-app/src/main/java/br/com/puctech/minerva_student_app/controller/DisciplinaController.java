@@ -40,9 +40,9 @@ public class DisciplinaController {
     public DisciplinaDTO criarDisciplina(Authentication authentication, @RequestBody DisciplinaDTO disciplinaDTO) {
         Usuario usuario = userService.getUsuario(authentication.getName());
 
-        Disciplina disciplina = new Disciplina(usuario, disciplinaDTO.getNome(), disciplinaDTO.getDescricao(),
-                disciplinaDTO.getArquivada(), disciplinaDTO.getMediaNecessaria(),
-                0.0, disciplinaDTO.getCreditos(), disciplinaDTO.getFaltasRestantes());
+        Disciplina disciplina = new Disciplina(usuario, disciplinaDTO.getNome(), disciplinaDTO.getDescricao(), disciplinaDTO.getArquivada(),
+                disciplinaDTO.getMediaNecessaria(), 0.0, disciplinaDTO.getCreditos(), disciplinaDTO.getCargaHorariaTotal(),
+                disciplinaDTO.getCargaHorariaAula(), disciplinaDTO.getFaltasRegistradas());
         Disciplina disciplinaSalva = disciplinaService.salvarDisciplina(disciplina);
 
         return new DisciplinaDTO(disciplinaSalva);
@@ -53,7 +53,8 @@ public class DisciplinaController {
         Usuario usuario = userService.getUsuario(authentication.getName());
 
         Disciplina disciplina = new Disciplina(usuario, disciplinaDTO.getNome(), disciplinaDTO.getDescricao(), disciplinaDTO.getArquivada(),
-                disciplinaDTO.getMediaNecessaria(), disciplinaDTO.getMediaAtual(), disciplinaDTO.getCreditos(), disciplinaDTO.getFaltasRestantes());
+                disciplinaDTO.getMediaNecessaria(), disciplinaDTO.getMediaAtual(), disciplinaDTO.getCreditos(), disciplinaDTO.getCargaHorariaTotal(),
+                disciplinaDTO.getCargaHorariaAula(), disciplinaDTO.getFaltasRegistradas());
         Disciplina disciplinaSalva = disciplinaService.atualizarDisciplina(id, disciplina);
 
         return new DisciplinaDTO(disciplinaSalva);

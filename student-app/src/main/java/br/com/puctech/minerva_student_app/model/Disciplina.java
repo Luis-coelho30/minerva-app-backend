@@ -25,9 +25,12 @@ public class Disciplina {
     private Double mediaNecessaria;
     private Double mediaAtual;
     private Integer creditos;
-    private Integer faltasRestantes;
+    private Integer cargaHorariaTotal = 0;
+    private Integer cargaHorariaAula = 0;
+    private Integer faltasRegistradas;
 
-    public Disciplina(Usuario usuario, String nome, String descricao, Boolean arquivada, Double mediaNecessaria, Double mediaAtual, Integer creditos, Integer faltasRestantes) {
+    public Disciplina(Usuario usuario, String nome, String descricao, Boolean arquivada, Double mediaNecessaria, Double mediaAtual,
+                      Integer creditos, Integer cargaHorariaTotal, Integer cargaHorariaAula, Integer faltasRegistradas) {
         this.usuario = usuario;
         this.nome = nome;
         this.descricao = descricao;
@@ -35,7 +38,9 @@ public class Disciplina {
         this.mediaNecessaria = mediaNecessaria;
         this.mediaAtual = mediaAtual;
         this.creditos = creditos;
-        this.faltasRestantes = faltasRestantes;
+        this.cargaHorariaTotal = cargaHorariaTotal;
+        this.cargaHorariaAula = cargaHorariaAula;
+        this.faltasRegistradas = faltasRegistradas;
     }
 
     @Override

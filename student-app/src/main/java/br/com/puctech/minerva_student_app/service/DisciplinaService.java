@@ -53,7 +53,9 @@ public class DisciplinaService {
             disciplina.setMediaNecessaria(novaDisciplina.getMediaNecessaria());
             disciplina.setMediaAtual(novaDisciplina.getMediaAtual());
             disciplina.setCreditos(novaDisciplina.getCreditos());
-            disciplina.setFaltasRestantes(novaDisciplina.getFaltasRestantes());
+            disciplina.setCargaHorariaAula(novaDisciplina.getCargaHorariaAula());
+            disciplina.setCargaHorariaTotal(novaDisciplina.getCargaHorariaTotal());
+            disciplina.setFaltasRegistradas(novaDisciplina.getFaltasRegistradas());
         } else {
             throw new DisciplinaNaoEncontradaException(id);
         }

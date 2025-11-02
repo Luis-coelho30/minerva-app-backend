@@ -7,6 +7,7 @@ import br.com.puctech.minerva_student_app.model.Usuario;
 import br.com.puctech.minerva_student_app.service.UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Value("${minerva.cookie.secure}")
+    private boolean cookieSecure;
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponseDTO> login(@RequestBody UsuarioRequestDTO usuarioRequestDTO,
@@ -42,7 +46,7 @@ public class UserController {
 
         ResponseCookie cookie = ResponseCookie.from("jwt", jwt)
                 .httpOnly(true)
-                .secure(false) // true em prod
+                .secure(cookieSecure)
                 .path("/")
                 .sameSite("None")
                 .maxAge(Duration.ofHours(1))
@@ -74,7 +78,7 @@ public class UserController {
 
         ResponseCookie cookie = ResponseCookie.from("jwt", jwt)
                 .httpOnly(true)
-                .secure(false) // true em prod
+                .secure(cookieSecure)
                 .path("/")
                 .sameSite("None")
                 .maxAge(Duration.ofHours(1))

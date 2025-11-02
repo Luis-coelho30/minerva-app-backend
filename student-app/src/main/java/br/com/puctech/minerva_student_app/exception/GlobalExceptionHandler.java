@@ -5,6 +5,7 @@ import br.com.puctech.minerva_student_app.exception.nota.NotaNaoEncontradaExcept
 import br.com.puctech.minerva_student_app.exception.user.AuthenticationFailedException;
 import br.com.puctech.minerva_student_app.exception.user.CredenciaisIncorretasException;
 import br.com.puctech.minerva_student_app.exception.user.EmailJaCadastradoException;
+import br.com.puctech.minerva_student_app.exception.user.UsuarioNaoEncontradoException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,6 +31,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotaNaoEncontradaException.class)
     public ResponseEntity<String> handleNotaNaoEncontradaException(NotaNaoEncontradaException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND) //404
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(UsuarioNaoEncontradoException.class)
+    public ResponseEntity<String> handleUsuarioNaoEncontradoException(UsuarioNaoEncontradoException ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND) //404
                 .body(ex.getMessage());

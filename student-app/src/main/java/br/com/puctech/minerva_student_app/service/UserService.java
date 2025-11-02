@@ -4,11 +4,11 @@ import br.com.puctech.minerva_student_app.exception.user.AuthenticationFailedExc
 import br.com.puctech.minerva_student_app.exception.user.CredenciaisIncorretasException;
 import br.com.puctech.minerva_student_app.exception.user.EmailJaCadastradoException;
 
+import br.com.puctech.minerva_student_app.exception.user.UsuarioNaoEncontradoException;
 import br.com.puctech.minerva_student_app.model.Usuario;
-import br.com.puctech.minerva_student_app.repo.UserRepository;
+import br.com.puctech.minerva_student_app.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,6 +23,14 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private TarefaRepository tarefaRepository;
+    @Autowired
+    private DisciplinaRepository disciplinaRepository;
+    @Autowired
+    private ArquivoRepository arquivoRepository;
+    @Autowired
+    private NotaRepository notaRepository;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -69,7 +77,7 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity<String> atualizarUsuario(String email, Usuario novoUsuario) {
+    public String atualizarUsuario(String email, Usuario novoUsuario) {
         Usuario usuario = userRepository.findByEmail(email);
         if(usuario == null) {
             throw new UsernameNotFoundException("Usuário não foi encontrado.");
@@ -80,11 +88,23 @@ public class UserService {
             userRepository.save(usuario);
         }
 
-        return ResponseEntity.ok().body(jwtService.generateToken(usuario.getEmail()));
+        return jwtService.generateToken(usuario.getEmail());
     }
 
     @Transactional
     public void deletarUsuario(String email) {
+
+        Usuario usuario = userRepository.findByEmail(email);
+
+        if(usuario == null) {
+            throw new UsuarioNaoEncontradoException(email);
+        }
+
+        tarefaRepository.deleteByUsuario(usuario);
+        arquivoRepository.deleteByUsuario(usuario);
+        notaRepository.deleteByDisciplinaUsuario(usuario);
+        disciplinaRepository.deleteByUsuario(usuario);
+
         userRepository.deleteByEmail(email);
     }
 }

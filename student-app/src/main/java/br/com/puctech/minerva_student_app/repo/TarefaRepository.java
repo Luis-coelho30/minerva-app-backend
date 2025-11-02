@@ -1,7 +1,9 @@
 package br.com.puctech.minerva_student_app.repo;
 
 import br.com.puctech.minerva_student_app.model.Tarefa;
+import br.com.puctech.minerva_student_app.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -24,4 +26,6 @@ public interface TarefaRepository extends JpaRepository<Tarefa, Long> {
     List<Tarefa> findTaskByDisciplina(String email, Long disciplinaId);
 
     void deleteAllByDisciplinaId(Long id);
+
+    void deleteByUsuario(Usuario usuario);
 }

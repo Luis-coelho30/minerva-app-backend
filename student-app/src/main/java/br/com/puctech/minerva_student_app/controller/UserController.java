@@ -66,7 +66,23 @@ public class UserController {
     public ResponseEntity<String> atualizarUsuario(Authentication authentication, @RequestBody UsuarioRequestDTO usuarioDTO) {
         Usuario novoUsuario = new Usuario(usuarioDTO.getUsername(), usuarioDTO.getEmail(), usuarioDTO.getSenha());
 
-        return userService.atualizarUsuario(authentication.getName(), novoUsuario);
+        String jwt = userService.atualizarUsuario(authentication.getName(), novoUsuario);
+
+        if (jwt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        ResponseCookie cookie = ResponseCookie.from("jwt", jwt)
+                .httpOnly(true)
+                .secure(false) // true em prod
+                .path("/")
+                .sameSite("None")
+                .maxAge(Duration.ofHours(1))
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .build();
     }
 
     @DeleteMapping("/me")

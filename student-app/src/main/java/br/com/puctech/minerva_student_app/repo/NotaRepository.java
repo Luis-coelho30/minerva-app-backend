@@ -3,6 +3,7 @@ package br.com.puctech.minerva_student_app.repo;
 import br.com.puctech.minerva_student_app.model.Nota;
 import br.com.puctech.minerva_student_app.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -18,6 +19,8 @@ public interface NotaRepository extends JpaRepository<Nota, Long> {
     List<Nota> findNotasByDisciplina(Long id);
 
     void deleteAllByDisciplinaId(Long id);
+
+    void deleteByDisciplinaUsuario(Usuario usuario);
 
     @Query(nativeQuery = true,
             value = "SELECT NOTA.* FROM NOTA " +

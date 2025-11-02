@@ -1,9 +1,38 @@
 services:
-  postgres:
-    image: 'postgres:latest'
+  postgres-dev:
+    image: postgres:15-alpine
+    container_name: minerva-postgres-dev
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      POSTGRES_DB: minervadb_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: docker
+    volumes:
+      - minerva-dev-data:/var/lib/postgresql/data
     ports:
-      - '5432'
+      - "5433:5432"
+    networks:
+      - minerva-net
+
+  minerva-app-dev:
+    container_name: minerva-app-dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres-dev
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - JWT_SECRET=${JWT_SECRET}
+    networks:
+      - minerva-net
+
+networks:
+  minerva-net:
+    driver: bridge
+
+volumes:
+  minerva-dev-data:
+    driver: local
+
